@@ -1,5 +1,6 @@
 # for token Generation
 import StringIO
+import base64
 
 from django.conf import settings
 from django.db.models.signals import post_save
@@ -75,7 +76,11 @@ class FileViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
         incident = get_object_or_404(Incident, pk=pk)
         files_added = []
         for i, file in enumerate(files):
-            file_obj = FileWrapper(StringIO.StringIO(file['content']))
+            try:
+                file_obj = base64.b64decode(file['content'])
+                file_obj = FileWrapper(StringIO.StringIO(file_obj))
+            except Exception:
+                file_obj = FileWrapper(StringIO.StringIO(file['content']))
             file_obj.name = file['filename']
             description = file['description']
             f = handle_uploaded_file(file_obj, description, incident)
