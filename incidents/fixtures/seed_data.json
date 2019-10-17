@@ -590,6 +590,15 @@
         "bale_subcategory": 3
     }
 },
+    {
+    "pk": 25,
+    "model": "incidents.incidentcategory",
+    "fields": {
+        "name": "Uncategoryzed",
+        "is_major": false,
+        "bale_subcategory": 3
+    }
+},
 {
     "pk": 1,
     "model": "auth.group",
