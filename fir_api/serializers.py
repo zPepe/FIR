@@ -48,11 +48,9 @@ class FileSerializer(serializers.ModelSerializer):
 
 class IncidentSerializer(serializers.ModelSerializer):
     detection = serializers.PrimaryKeyRelatedField(queryset=Label.objects.filter(group__name='detection'))
-    actor = serializers.PrimaryKeyRelatedField(queryset=Label.objects.filter(group__name='actor'))
-    plan = serializers.PrimaryKeyRelatedField(queryset=Label.objects.filter(group__name='plan'))
-    file_set = AttachedFileSerializer(many=True, read_only=True)
+    file_set = AttachedFileSerializer(many=True)
 
     class Meta:
         model = Incident
-        exclude = ['main_business_lines', 'artifacts']
-        read_only_fields = ('id', 'opened_by', 'main_business_lines', 'file_set')
+        exclude = ['main_business_lines', 'opened_by', 'plan', 'actor', 'file_set']
+        read_only_fields = ('id', 'main_business_lines', 'artifacts', 'file_set')
