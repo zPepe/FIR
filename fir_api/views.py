@@ -1,6 +1,9 @@
 # for token Generation
-import StringIO
 import base64
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 from django.conf import settings
 from django.db.models.signals import post_save

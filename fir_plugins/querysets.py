@@ -51,7 +51,13 @@ class IableSequence(object):
 
     def __nonzero__(self):
         try:
-            iter(self).next()
+            itr = iter(self)
+            if hasattr(itr, 'next'):
+                itr.next()
+            elif hasattr(itr, '__next__'):
+                itr.__next__()
+            else:
+                raise BaseException('no iterable next function available')
         except StopIteration:
             return False
         return True
@@ -61,10 +67,15 @@ class IableSequence(object):
             stop = len(self)
         sub_iables = []
         # collect sub sets
-        it = self.iables.__iter__()
+        itr = self.iables.__iter__()
         try:
             while stop > start:
-                i = it.next()
+                if hasattr(itr, 'next'):
+                    i = itr.next()
+                elif hasattr(itr, '__next__'):
+                    i = itr.__next__()
+                else:
+                    raise BaseException('no iterable next function available')
                 i_len = len(i)
                 if i_len > start:
                     # no problem with 'stop' being too big
@@ -81,7 +92,7 @@ class IableSequence(object):
         Does not support negative indices.
         '''
         # params validation
-        if not isinstance(key, (slice, int, long)):
+        if not isinstance(key, (slice, int, int)):
             raise TypeError
         assert (
             (not isinstance(key, slice) and (key >= 0)) or
@@ -213,7 +224,7 @@ class QuerySetSequence(IableSequence):
 
         Does not modify original QuerySetSequence.
         '''
-        not_empty_qss = filter(None, qss if qss else self.iables)
+        not_empty_qss = list(filter(None, qss if qss else self.iables))
         if not len(not_empty_qss):
             return EmptyQuerySet()
         if len(not_empty_qss) == 1:
