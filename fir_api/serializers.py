@@ -48,9 +48,9 @@ class FileSerializer(serializers.ModelSerializer):
 
 class IncidentSerializer(serializers.ModelSerializer):
     detection = serializers.PrimaryKeyRelatedField(queryset=Label.objects.filter(group__name='detection'))
-    file_set = AttachedFileSerializer(many=True)
+    file_set = None
 
     class Meta:
         model = Incident
-        exclude = ['main_business_lines', 'opened_by', 'plan', 'actor', 'file_set']
+        exclude = ['main_business_lines', 'opened_by', 'plan', 'actor']
         read_only_fields = ('id', 'main_business_lines', 'artifacts', 'file_set')

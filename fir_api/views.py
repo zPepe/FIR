@@ -1,9 +1,7 @@
 # for token Generation
 import base64
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
+from io import StringIO
+from io import BytesIO
 
 from django.conf import settings
 from django.db.models.signals import post_save
@@ -81,9 +79,10 @@ class FileViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
         for i, file in enumerate(files):
             try:
                 file_obj = base64.b64decode(file['content'])
-                file_obj = FileWrapper(StringIO.StringIO(file_obj))
-            except Exception:
-                file_obj = FileWrapper(StringIO.StringIO(file['content']))
+                file_obj = FileWrapper(BytesIO(file_obj))
+            except Exception as e:
+                print(str(e))
+                file_obj = FileWrapper(StringIO(file['content']))
             file_obj.name = file['filename']
             description = file['description']
             f = handle_uploaded_file(file_obj, description, incident)
